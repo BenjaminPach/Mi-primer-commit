@@ -1,123 +1,154 @@
+
+
+ <!-- No supe hacer todo por archivos separados, no me funcionaba el codigo -->
+
 <!DOCTYPE html>
-<html>
-<head> 
+<html lang="es">
+<head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" >
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calificación de Animales</title>
     <style>
-* {
-  box-sizing: border-box;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
 
-/* Create two equal columns that floats next to each other */
-.column {
-  float: left;
-  width: 50%;
-  padding: 10px;
-  height: 300px; /* Should be removed. Only for demonstration */
-}
+        .contenedor {
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
+        .animal {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 600px) {
-  .column {
-    width: 100%;
-  }
-}
+        .animal img {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .estrella {
+            font-size: 20px;
+            cursor: pointer;
+            color: #ccc;
+        }
+
+        .estrella.seleccionada {
+            color: #ffbf00;
+        }
+
+        .boton {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .boton.fav {
+            background-color: #ffc107;
+        }
+
+        .boton.fav.seleccionada {
+            background-color: #dc3545;
+        }
     </style>
 </head>
 <body>
+    <div id="root"></div>
+    
+    <!-- React y ReactDOM -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    
+    <!-- Código JS de la aplicación -->
+    <script type="text/babel">
+        function TarjetaAnimal({ animal, onRate, onFav }) {
+            const [rating, setRating] = React.useState(0);
+            const [esFav, setEsFav] = React.useState(false);
 
+            const manejarRating = (nuevoRating) => {
+                setRating(nuevoRating);
+                onRate(animal.id, nuevoRating);
+            };
 
-<h1>Marketplace de peces</h1>
-<p>Bienvenidos al marketplace de peces, en esta pagina web podra encontrar variedad de peces, los cuales podra usar con cualquier proposito, comida, mascota, juguetes</p>
+            const manejarFav = () => {
+                setEsFav(!esFav);
+                onFav(animal.id);
+            };
 
+            return (
+                <div className="animal">
+                    <img src={animal.imagen} alt={`Animal ${animal.id}`} />
+                    <div className="rating">
+                        {[...Array(10)].map((_, index) => (
+                            <span
+                                key={index}
+                                className={`estrella ${index < rating ? 'seleccionada' : ''}`}
+                                onClick={() => manejarRating(index + 1)}
+                            >
+                                ★
+                            </span>
+                        ))}
+                    </div>
+                    <button
+                        className={`boton fav ${esFav ? 'seleccionada' : ''}`}
+                        onClick={manejarFav}
+                    >
+                        Fav
+                    </button>
+                </div>
+            );
+        }
 
+        function App() {
+            const animales = [
+                { id: 1, nombre: "animal 1", imagen: "https://img.freepik.com/foto-gratis/perro-pug-aislado-fondo-blanco_2829-11416.jpg" },
+                { id: 2, nombre: "animal 2", imagen: "https://img.freepik.com/foto-gratis/lindo-gato-relajante-estudio_23-2150692717.jpg" },
+                { id: 3, nombre: "animal 3", imagen: "https://www.fundacionaquae.org/wp-content/uploads/2018/10/proteger-a-los-animales.jpg" },
+                { id: 4, nombre: "animal 4", imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrHpFkcAEL69eoj6zusnHmBM0lWCOntnpWpA&s" },
+                { id: 5, nombre: "animal 5", imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0_DnEa40qouEG7xg7aYP3wv5HRapPO_LKQg&s" },
+                { id: 6, nombre: "animal 6", imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiT8XXmitwpb7dUo1lNHDpqB1z9jlbr-LatA&s" },
+            ];
 
+            const manejarRating = (id, rating) => {
+                console.log(`Animal ${id} calificado con ${rating} estrellas`);
+            };
 
+            const manejarFav = (id) => {
+                console.log(`Animal ${id} marcado como favorito`);
+            };
 
-<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img class="d-block w-100" src="https://www.hola.com/horizon/landscape/34732c07153e-peces-reconocen-personas-t.jpg" style="width:10px;height:400px;" alt="slide 1">
-        </div>
-        <div class="carousel-item">
-            <img class="d-block w-100" src="https://journal.iaabcfoundation.org/wp-content/uploads/2022/01/Gonzalez.png" style="width:10px;height:400px;" alt="slide 2">
-        </div>
-        <div class="carousel-item">
-            <img class="d-block w-100" src="https://www.elmueble.com/medio/2023/11/09/pez-amarillo_9260480a_231109121944_900x900.jpg" style="width:10px;height:400px;" alt="slide 3">
-        </div>
-    </div>
+            return (
+                <div className="contenedor">
+                    <h1>Calificación de Animales</h1>
+                    <p>Bienvenido a nuestra página de calificación de animales. Aquí puedes valorar a tus animales favoritos con una calificación de 1 a 10 estrellas y marcar aquellos que más te gustan como favoritos.</p>
+                    {animales.map((animal) => (
+                        <TarjetaAnimal
+                            key={animal.id}
+                            animal={animal}
+                            onRate={manejarRating}
+                            onFav={manejarFav}
+                        />
+                    ))}
+                </div>
+            );
+        }
 
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-</div>
-
-
-<div class="row">
-    <div class="column">
-      <h2>Column 1</h2>
-      <p>Descubre nuestro amplio surtido de peces exóticos y accesorios para acuarios. En Aquática, nos especializamos en ofrecerte todo lo necesario para un acuario vibrante y saludable. Desde peces de agua dulce y salada hasta equipos de filtración y decoración, tenemos lo que necesitas para transformar tu hogar en un oasis submarino. ¡Visítanos y sumérgete en el mundo de Aquática!</p>
-    </div>
-    <div class="column">
-      <h2>Column 2</h2>
-      <p>"Compré un pez betta en Aquática y estoy encantado con la calidad y el estado del pez. El personal fue muy amable y me proporcionó excelentes consejos para el cuidado. ¡Definitivamente volveré por más!"</p>
-    </div>
-  </div>
-  
-  <div class="accordion" id="accordionPanelsStayOpenExample">
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-          Accordion Item #1
-        </button>
-      </h2>
-      <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-        <div class="accordion-body">
-          <strong>Reseña 2:</strong> Compré un pez en una tienda de mariscos y lo preparó con esmero. Su cena fue un éxito, demostrando que la frescura del pescado puede elevar cualquier plato a nuevas alturas culinarias.
-        </div>
-      </div>
-    </div>
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-          Accordion Item #2
-        </button>
-      </h2>
-      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-        <div class="accordion-body">
-          <strong>Reseña 2:</strong> Compré un pez en una tienda especializada y, tras prepararlo con esmero, disfrutó de una comida llena de frescura y sabor. Su elección demostró que a veces la calidad de un buen pescado puede transformar una comida común en una experiencia memorable.
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+        ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
